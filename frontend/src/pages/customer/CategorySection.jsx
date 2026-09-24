@@ -3,7 +3,7 @@ import { CATEGORIES } from "../../data/mockData";
 const CategorySection = ({ activeCategory, onSelectCategory }) => {
   return (
     <section className="mt-4 sm:mt-6">
-      <div className="mb-3 flex items-center justify-between px-4 sm:px-6 lg:px-10">
+      <div className="mb-8 flex items-center justify-between px-4 sm:px-6 lg:px-10">
         <div>
           <h2 className="text-base sm:text-lg font-extrabold text-gray-900">
             Shop by Meat Category
@@ -21,7 +21,7 @@ const CategorySection = ({ activeCategory, onSelectCategory }) => {
         )}
       </div>
 
-      <div className="flex gap-3 overflow-x-auto px-4 pb-3 sm:px-6 lg:px-10 scrollbar-none">
+      <div className=" flex gap-3 overflow-x-auto px-4 pb-3 sm:px-6 lg:px-10 scrollbar-none">
         {CATEGORIES.map((cat) => {
           const isSelected = activeCategory === cat.id;
           return (
@@ -35,7 +35,7 @@ const CategorySection = ({ activeCategory, onSelectCategory }) => {
               }`}
             >
               <div
-                className={`flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-2xl sm:text-3xl shadow-xs transition duration-200 group-hover:-translate-y-0.5 ${
+                className={`flex  h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-2xl sm:text-3xl shadow-xs transition duration-200 group-hover:-translate-y-0.5 ${
                   isSelected
                     ? "bg-red-600 text-white shadow-md shadow-red-600/30"
                     : "bg-white border border-gray-200"
