@@ -3,9 +3,18 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-
+import addressRoutes from "./routes/addressRoutes.js";
 import shopRoutes from "./routes/shopRoutes.js";
 import authRoutes from "./routes/authRoutes.js"
+import categoryRoutes from "./routes/categoryRoutes.js";
+import adminShopRoutes from "./routes/adminShopRoutes.js";
+import publicCatalogRoutes from "./routes/publicCatalogRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import deliveryBoyRoutes from "./routes/deliveryBoyRoutes.js";
+import deliveryOrderRoutes from "./routes/deliveryOrderRoutes.js";
+import fcmRoutes from "./routes/fcmRoutes.js";
+
+
 const app = express();
 
 app.use(
@@ -33,4 +42,24 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/shops", shopRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/admin/shops", adminShopRoutes);
+app.use(
+  "/api",
+  publicCatalogRoutes
+);
+
+app.use("/api/addresses", addressRoutes);
+app.use("/api/orders", orderRoutes);
+app.use(
+  "/api/delivery-boys",
+  deliveryBoyRoutes
+);
+app.use(
+  "/api/delivery-orders",
+  deliveryOrderRoutes
+);
+
+app.use("/api/fcm", fcmRoutes);
+
 export default app;

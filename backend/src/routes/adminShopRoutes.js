@@ -5,7 +5,6 @@ import {
   getShops,
   getShopById,
   updateShop,
-
 } from "../controllers/shopController.js";
 
 import protect from "../middleware/authMiddleware.js";
@@ -15,11 +14,7 @@ import checkShopAccess from "../middleware/shopAccessMiddleware.js";
 const router = express.Router();
 
 
-// ======================================================
-// PLATFORM ADMIN
-// Create new shop + shop admin
-// ======================================================
-
+// Platform admin → create shop
 router.post(
   "/",
   protect,
@@ -28,22 +23,16 @@ router.post(
 );
 
 
-// ======================================================
-// MARKETPLACE SHOP DISCOVERY
-// Customers can see active shops
-// ======================================================
-
+// Platform admin → all shops
 router.get(
   "/",
+  protect,
+  authorize("platform_admin"),
   getShops
 );
 
 
-// ======================================================
-// GET SINGLE SHOP
-// Platform admin / shop admin
-// ======================================================
-
+// Platform admin / shop admin → single shop
 router.get(
   "/:id",
   protect,
@@ -53,10 +42,7 @@ router.get(
 );
 
 
-// ======================================================
-// UPDATE SHOP
-// ======================================================
-
+// Platform admin / shop admin → update
 router.put(
   "/:id",
   protect,
@@ -64,7 +50,5 @@ router.put(
   checkShopAccess,
   updateShop
 );
-
-
 
 export default router;

@@ -10,23 +10,22 @@ const userSchema = new mongoose.Schema(
 
     email: {
       type: String,
-      required: true,
       unique: true,
+      sparse: true,
       lowercase: true,
       trim: true,
     },
 
     phone: {
       type: String,
-      required: true,
       unique: true,
+      sparse: true,
       trim: true,
     },
 
     password: {
       type: String,
       required: true,
-      minlength: 6,
       select: false,
     },
 
@@ -38,18 +37,21 @@ const userSchema = new mongoose.Schema(
         "customer",
         "delivery_boy",
       ],
-      default: "customer",
+      required: true,
     },
 
+    // Only used by shop_admin and delivery_boy.
+    // Always null for platform_admin and customer.
     shopId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Shop",
       default: null,
+      index: true,
     },
 
     avatar: {
       type: String,
-      default: "",
+      default: null,
     },
 
     isActive: {
@@ -72,6 +74,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const User = mongoose.model("User", userSchema);
-
-export default User;
+export default mongoose.model("User", userSchema);

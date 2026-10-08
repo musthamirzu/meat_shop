@@ -17,85 +17,56 @@ export const registerCustomer = async (req, res) => {
       email,
       phone,
       password,
-      shopId,
     } = req.body;
 
-    if (!name || !email || !phone || !password) {
+    if (!name || !password) {
       return res.status(400).json({
         success: false,
-        message: "Name, email, phone and password are required",
+        message: "Name and password are required",
       });
     }
 
-    // If shopId is provided, verify the shop
-    if (shopId) {
-      const shop = await Shop.findById(shopId);
-
-      if (!shop) {
-        return res.status(404).json({
-          success: false,
-          message: "Shop not found",
-        });
-      }
-
-      if (shop.status !== "active") {
-        return res.status(400).json({
-          success: false,
-          message: "This shop is not currently active",
-        });
-      }
-    }
-
-    // Check existing email
-    const existingEmail = await User.findOne({
-      email: email.toLowerCase(),
+    const existingUser = await User.findOne({
+      $or: [
+        ...(email ? [{ email: email.toLowerCase() }] : []),
+        ...(phone ? [{ phone }] : []),
+      ],
     });
 
-    if (existingEmail) {
+    if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: "Email already registered",
+        message: "User already exists",
       });
     }
 
-    // Check existing phone
-    const existingPhone = await User.findOne({
-      phone,
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (existingPhone) {
-      return res.status(409).json({
-        success: false,
-        message: "Phone number already registered",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    const user = await User.create({
+    const customer = await User.create({
       name,
-      email: email.toLowerCase(),
+      email: email?.toLowerCase(),
       phone,
       password: hashedPassword,
+
       role: "customer",
-      shopId: shopId || null,
+
+      // IMPORTANT
+      shopId: null,
     });
 
-    const token = generateToken(user);
+    const token = generateToken(customer._id);
 
     return res.status(201).json({
       success: true,
       message: "Customer registered successfully",
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          shopId: user.shopId,
-        },
-        token,
+      token,
+      user: {
+        id: customer._id,
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+        role: customer.role,
+        shopId: null,
       },
     });
   } catch (error) {
@@ -103,7 +74,7 @@ export const registerCustomer = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to register customer",
+      message: "Server error",
     });
   }
 };
